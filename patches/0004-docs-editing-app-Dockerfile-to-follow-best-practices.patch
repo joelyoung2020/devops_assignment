@@ -1,0 +1,32 @@
+From 40a0034e6b9a9001a96b083929a8ec7960d5f2c6 Mon Sep 17 00:00:00 2001
+From: root <joelokebugwu1998@gmail.com>
+Date: Tue, 13 Dec 2022 19:41:49 -0500
+Subject: [PATCH 4/5] docs: editing app/Dockerfile to follow best practices
+
+---
+ app/Dockerfile | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/app/Dockerfile b/app/Dockerfile
+index 56cfe18..5239395 100644
+--- a/app/Dockerfile
++++ b/app/Dockerfile
+@@ -1,8 +1,10 @@
+ FROM python:3.8-slim
+ ENV PYTHONUNBUFFERED=1
+ RUN mkdir /var/www
+-COPY requirements.txt /var/www/
+-RUN cd /var/www && \
+-    python3 -m pip install -r requirements.txt
+-COPY app.py .
+-ENTRYPOINT ["gunicorn", "app:app", "--bind=0.0.0.0:8000", "--workers=4", "--log-level=debug", "--reload"]
++WORKDIR /var/www/
++COPY . .
++RUN  python3 -m pip install -r requirements.txt
++EXPOSE 8000
++CMD ["--bind=0.0.0.0:8000", "--workers=4", "--log-level=debug", "--reload"]
++ENTRYPOINT ["gunicorn", "app:app"]
++
+-- 
+2.31.1
+

@@ -1,0 +1,142 @@
+From 751f6ce6d08ebfd374ab1f102b5fa0c902c101a7 Mon Sep 17 00:00:00 2001
+From: root <joelokebugwu1998@gmail.com>
+Date: Tue, 13 Dec 2022 19:57:03 -0500
+Subject: [PATCH 5/5] docs: creating a git patch file to fix errors on main
+ branch
+
+---
+ fixederrors.patch | 122 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 122 insertions(+)
+ create mode 100644 fixederrors.patch
+
+diff --git a/fixederrors.patch b/fixederrors.patch
+new file mode 100644
+index 0000000..d22ad92
+--- /dev/null
++++ b/fixederrors.patch
+@@ -0,0 +1,122 @@
++From e0c0aa981bdd0d2e2bfb3997533b9ed573e1c51b Mon Sep 17 00:00:00 2001
++From: root <joelokebugwu1998@gmail.com>
++Date: Tue, 13 Dec 2022 12:03:29 -0500
++Subject: [PATCH 1/4] docs: adding enviromental variables needed to a .env file
++
++---
++ .env | 3 +++
++ 1 file changed, 3 insertions(+)
++ create mode 100644 .env
++
++diff --git a/.env b/.env
++new file mode 100644
++index 0000000..0ec9a55
++--- /dev/null
+++++ b/.env
++@@ -0,0 +1,3 @@
+++POSTGRES_PASSWORD=password
+++KEYCLOAK_PASSWORD=admin
+++
++-- 
++2.31.1
++
++
++From d595d25a1729bddc8d515b425d1591c261885be9 Mon Sep 17 00:00:00 2001
++From: root <joelokebugwu1998@gmail.com>
++Date: Tue, 13 Dec 2022 12:11:28 -0500
++Subject: [PATCH 2/4] docs: spelling correction for app route /login in
++ app/app.py
++
++---
++ app/app.py | 2 +-
++ 1 file changed, 1 insertion(+), 1 deletion(-)
++
++diff --git a/app/app.py b/app/app.py
++index 9322101..11d5e6c 100644
++--- a/app/app.py
+++++ b/app/app.py
++@@ -20,7 +20,7 @@ except Exception as ex:
++ def index():
++     return 'Hello world!'
++ 
++-@app.route("/loogin")
+++@app.route("/login")
++ def login():
++     return redirect(AUTH_URL, code=302)
++ 
++-- 
++2.31.1
++
++
++From 1d029ba48d955c8d7822c0767f7f5637a1079065 Mon Sep 17 00:00:00 2001
++From: root <joelokebugwu1998@gmail.com>
++Date: Tue, 13 Dec 2022 19:21:35 -0500
++Subject: [PATCH 3/4] fix: changed port attached to keycloak to 8080 in the
++ /etc/nginx/nginx.conf
++
++---
++ etc/nginx/nginx.conf | 8 ++++----
++ 1 file changed, 4 insertions(+), 4 deletions(-)
++
++diff --git a/etc/nginx/nginx.conf b/etc/nginx/nginx.conf
++index 46f58e1..944f620 100644
++--- a/etc/nginx/nginx.conf
+++++ b/etc/nginx/nginx.conf
++@@ -21,7 +21,7 @@ http {
++   keepalive_timeout 65;
++ 
++   upstream keycloak {
++-    server keycloak:8090 max_fails=3;
+++    server keycloak:8080 max_fails=3;
++   }
++   upstream app {
++     server app:8000 max_fails=3;
++@@ -66,9 +66,9 @@ http {
++     location /keycloak {
++       proxy_pass http://keycloak;
++       proxy_set_header Accept-Encoding "";
++-      proxy_set_header Host keycloak:8090;
++-      proxy_redirect "http://keycloak:8090" "$scheme://$host";
++-      sub_filter "http://keycloak:8090" "$scheme://$host";
+++      proxy_set_header Host keycloak:8080;
+++      proxy_redirect "http://keycloak:8080" "$scheme://$host";
+++      sub_filter "http://keycloak:8080" "$scheme://$host";
++       sub_filter_types text/html application/json;
++       sub_filter_once off;
++     }
++-- 
++2.31.1
++
++
++From 40a0034e6b9a9001a96b083929a8ec7960d5f2c6 Mon Sep 17 00:00:00 2001
++From: root <joelokebugwu1998@gmail.com>
++Date: Tue, 13 Dec 2022 19:41:49 -0500
++Subject: [PATCH 4/4] docs: editing app/Dockerfile to follow best practices
++
++---
++ app/Dockerfile | 12 +++++++-----
++ 1 file changed, 7 insertions(+), 5 deletions(-)
++
++diff --git a/app/Dockerfile b/app/Dockerfile
++index 56cfe18..5239395 100644
++--- a/app/Dockerfile
+++++ b/app/Dockerfile
++@@ -1,8 +1,10 @@
++ FROM python:3.8-slim
++ ENV PYTHONUNBUFFERED=1
++ RUN mkdir /var/www
++-COPY requirements.txt /var/www/
++-RUN cd /var/www && \
++-    python3 -m pip install -r requirements.txt
++-COPY app.py .
++-ENTRYPOINT ["gunicorn", "app:app", "--bind=0.0.0.0:8000", "--workers=4", "--log-level=debug", "--reload"]
+++WORKDIR /var/www/
+++COPY . .
+++RUN  python3 -m pip install -r requirements.txt
+++EXPOSE 8000
+++CMD ["--bind=0.0.0.0:8000", "--workers=4", "--log-level=debug", "--reload"]
+++ENTRYPOINT ["gunicorn", "app:app"]
+++
++-- 
++2.31.1
++
+-- 
+2.31.1
+

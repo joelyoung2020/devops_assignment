@@ -1,0 +1,39 @@
+From 1d029ba48d955c8d7822c0767f7f5637a1079065 Mon Sep 17 00:00:00 2001
+From: root <joelokebugwu1998@gmail.com>
+Date: Tue, 13 Dec 2022 19:21:35 -0500
+Subject: [PATCH 3/5] fix: changed port attached to keycloak to 8080 in the
+ /etc/nginx/nginx.conf
+
+---
+ etc/nginx/nginx.conf | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/etc/nginx/nginx.conf b/etc/nginx/nginx.conf
+index 46f58e1..944f620 100644
+--- a/etc/nginx/nginx.conf
++++ b/etc/nginx/nginx.conf
+@@ -21,7 +21,7 @@ http {
+   keepalive_timeout 65;
+ 
+   upstream keycloak {
+-    server keycloak:8090 max_fails=3;
++    server keycloak:8080 max_fails=3;
+   }
+   upstream app {
+     server app:8000 max_fails=3;
+@@ -66,9 +66,9 @@ http {
+     location /keycloak {
+       proxy_pass http://keycloak;
+       proxy_set_header Accept-Encoding "";
+-      proxy_set_header Host keycloak:8090;
+-      proxy_redirect "http://keycloak:8090" "$scheme://$host";
+-      sub_filter "http://keycloak:8090" "$scheme://$host";
++      proxy_set_header Host keycloak:8080;
++      proxy_redirect "http://keycloak:8080" "$scheme://$host";
++      sub_filter "http://keycloak:8080" "$scheme://$host";
+       sub_filter_types text/html application/json;
+       sub_filter_once off;
+     }
+-- 
+2.31.1
+

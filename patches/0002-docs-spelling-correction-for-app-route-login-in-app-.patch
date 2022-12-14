@@ -1,0 +1,26 @@
+From d595d25a1729bddc8d515b425d1591c261885be9 Mon Sep 17 00:00:00 2001
+From: root <joelokebugwu1998@gmail.com>
+Date: Tue, 13 Dec 2022 12:11:28 -0500
+Subject: [PATCH 2/5] docs: spelling correction for app route /login in
+ app/app.py
+
+---
+ app/app.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/app/app.py b/app/app.py
+index 9322101..11d5e6c 100644
+--- a/app/app.py
++++ b/app/app.py
+@@ -20,7 +20,7 @@ except Exception as ex:
+ def index():
+     return 'Hello world!'
+ 
+-@app.route("/loogin")
++@app.route("/login")
+ def login():
+     return redirect(AUTH_URL, code=302)
+ 
+-- 
+2.31.1
+
